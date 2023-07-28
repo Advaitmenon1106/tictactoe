@@ -1,0 +1,28 @@
+.options{
+    display: flex;
+    height: 200px;
+    width: 400px;
+    margin-left: 40%;
+    margin-top: 10%;
+}
+
+.options svg{
+    margin: 10%;
+}
+
+.description{
+    font-size: 30px;
+    margin-left: 28%;
+}
+
+#bot:hover{
+    fill: blue;
+    cursor: pointer;
+    filter: drop-shadow(2px 2px 2px black);
+}
+
+#multiplayer:hover{
+    fill: orangered;
+    cursor: pointer;
+    filter: drop-shadow(5px 5px 5px black);
+}
