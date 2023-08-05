@@ -5,12 +5,6 @@ const gameStackOperations = (()=>{
             arr.push('O');
         }
         arr.push('X');
-
-        for (i = 0; i<3; i++){
-            for (j = 0; j<3; j++){
-                arr2[i][j];
-            }
-        }
     }
     const removeMove = (arr)=>{
         arr = arr.splice(0,1);
@@ -19,6 +13,7 @@ const gameStackOperations = (()=>{
 })();
 
 const tttBoard = (()=>{
+
     const generate = ()=>{
         document.body.style.backgroundColor = 'black';
         let grid = document.createElement('div');
@@ -30,8 +25,7 @@ const tttBoard = (()=>{
         for (i = 0; i<9; i++){
             let gridUnit = document.createElement('div');
             gridUnit.className = 'tttBoxes';
-            gridUnit.style.cssText = 'height: 300px; width: 300px; border: 3px solid white; color: white; text-align: center';
-            gridUnit.style.fontSize = '290px';
+            gridUnit.style.cssText = 'height: 300px; width: 300px; border: 3px solid white; color: white; text-align: center; font-size: 290px';
             grid.appendChild(gridUnit);
             gridUnit.style.cursor='pointer'
             gridUnit.id = i.toString();
@@ -41,6 +35,7 @@ const tttBoard = (()=>{
         }
 
     };
+
     const reset = ()=>{
         gameStackOperations.initialise(moveStack);
         generate();
@@ -48,7 +43,9 @@ const tttBoard = (()=>{
     }
     return {generate, reset};
     
+
 })();
+
 
 const gameplay = (()=>{
     const playATurn = (arr)=>{
@@ -66,6 +63,11 @@ const gameplay = (()=>{
                     else if (moveStack[0] == 'X'){
                         arr[Math.floor(parseInt(event.target.id)/3)][parseInt(event.target.id)%3] = 2;//2, if character on the board is O
                     }
+
+                    if (threeInARow(adjacencyMatrix, event)){
+                        console.log('won');
+                        window.location.reload();
+                    }
                 }
                 else{
                     return;
@@ -73,11 +75,30 @@ const gameplay = (()=>{
             })
         }
     }
-    const win = (adjMat)=>{
-        //Code for the win condition
+
+    const threeInARow = (adjMat, event)=>{
+        count = 0;
+        let value = adjMat[Math.floor(parseInt(event.target.id)/3)][0]
+        for (i = 0; i<3; i++){
+            if(adjMat[Math.floor(parseInt(event.target.id)/3)][i]==value && adjMat[Math.floor(parseInt(event.target.id)/3)][i]>0){
+                count = count+1;
+                if (count == 3){
+                    console.log('you win');
+                    return true;
+                }
+                console.log(count);
+            }
+            else{
+                count = 0;
+            }
+        }
     }
-    return {playATurn}
+
+    return {playATurn, threeInARow};
 })()
+
+// Global code:-
+
 
 let moveStack = [];
 let adjacencyMatrix = [[], [], []];
@@ -93,6 +114,7 @@ for (i = 0; i<box.length; i++){
     })
 }
 
+
 gameplay.playATurn(adjacencyMatrix);
 
 /*let resetButton = document.getElementById('reset');
@@ -100,6 +122,6 @@ resetButton.addEventListener('click', ()=>{
     for (i = 0; i<box.length; i++){
         box[i].innerHTML = null;
     }
-})*/
+}) [This bridge needs to be crossed later]*/ 
 
-//Strategy for 3 in a row: match indices of 2d array and id%3 of a grid unit
+// [DONE] Strategy for 3 in a row: match indices of 2d array and floor(id/3), id%3 of a grid unit 
