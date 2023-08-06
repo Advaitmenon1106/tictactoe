@@ -64,9 +64,18 @@ const gameplay = (()=>{
                         arr[Math.floor(parseInt(event.target.id)/3)][parseInt(event.target.id)%3] = 2;//2, if character on the board is O
                     }
 
-                    if (threeInARow(adjacencyMatrix, event)){
+                    if (diagonalWin(adjacencyMatrix)){
                         console.log('won');
                         window.location.reload();
+                    }
+                    
+                    else if (threeInARow(adjacencyMatrix, event)){
+                        console.log('won');
+                        window.location.reload();
+                    }
+                    else if (threeInAColumn(adjacencyMatrix, event)){
+                        console.log('won');
+                        window.location.reload();                  
                     }
                 }
                 else{
@@ -94,7 +103,37 @@ const gameplay = (()=>{
         }
     }
 
-    return {playATurn, threeInARow};
+    const threeInAColumn = (adjMat, event)=>{
+        count = 0;
+        let value = adjMat[0][Math.floor(parseInt(event.target.id)%3)]
+        for (i = 0; i<3; i++){
+            if(adjMat[i][(parseInt(event.target.id)%3)]==value && adjMat[i][(parseInt(event.target.id)%3)]>0){
+                count = count+1;
+                if (count == 3){
+                    console.log('you win(col)');
+                    return true;
+                }
+                console.log(count);
+            }
+            else{
+                count = 0;
+            }
+        }
+    }
+
+    const diagonalWin = (adjMat)=>{
+        if ((adjMat[0][0]+adjMat[1][1]+adjMat[2][2]) % 3 == 0){
+            return true;
+        }
+        else if ((adjMat[0][2] + adjMat[1][1] + adjMat[2][0])% 3 == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    return {playATurn};
 })()
 
 // Global code:-
