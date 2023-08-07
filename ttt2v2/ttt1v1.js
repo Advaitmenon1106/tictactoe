@@ -27,11 +27,8 @@ const tttBoard = (()=>{
             gridUnit.className = 'tttBoxes';
             gridUnit.style.cssText = 'height: 300px; width: 300px; border: 3px solid white; color: white; text-align: center; font-size: 290px';
             grid.appendChild(gridUnit);
-            gridUnit.style.cursor='pointer'
+            gridUnit.style.cursor='pointer';
             gridUnit.id = i.toString();
-            // gridUnit.addEventListener('mouseenter', ()=>{
-            //     gridUnit.style.backgroundColor = 'silver';
-            // })
         }
 
     };
@@ -43,47 +40,10 @@ const tttBoard = (()=>{
     }
     return {generate, reset};
     
-
 })();
 
 
 const gameplay = (()=>{
-    const playATurn = (arr)=>{
-        let boxes = document.getElementsByClassName('tttBoxes');
-        for (i = 0; i<box.length; i++){
-            boxes[i].addEventListener('click', (event)=>{
-                if (event.target.markedOrNot==false){
-                    event.target.style.color = 'white';
-                    event.target.innerHTML = moveStack[0];
-                    gameStackOperations.removeMove(moveStack);
-                    event.target.markedOrNot=true;
-                    if (moveStack[0] == 'O'){
-                        arr[Math.floor(parseInt(event.target.id)/3)][parseInt(event.target.id)%3] = 1;//1, if character on the board is X
-                    }
-                    else if (moveStack[0] == 'X'){
-                        arr[Math.floor(parseInt(event.target.id)/3)][parseInt(event.target.id)%3] = 2;//2, if character on the board is O
-                    }
-
-                    if (diagonalWin(adjacencyMatrix)){
-                        console.log('won');
-                        window.location.reload();
-                    }
-                    
-                    else if (threeInARow(adjacencyMatrix, event)){
-                        console.log('won');
-                        window.location.reload();
-                    }
-                    else if (threeInAColumn(adjacencyMatrix, event)){
-                        console.log('won');
-                        window.location.reload();                  
-                    }
-                }
-                else{
-                    return;
-                }
-            })
-        }
-    }
 
     const threeInARow = (adjMat, event)=>{
         count = 0;
@@ -95,10 +55,9 @@ const gameplay = (()=>{
                     console.log('you win');
                     return true;
                 }
-                console.log(count);
             }
             else{
-                count = 0;
+                count = 0; // Immediate reset
             }
         }
     }
@@ -113,7 +72,6 @@ const gameplay = (()=>{
                     console.log('you win(col)');
                     return true;
                 }
-                console.log(count);
             }
             else{
                 count = 0;
@@ -122,7 +80,7 @@ const gameplay = (()=>{
     }
 
     const diagonalWin = (adjMat)=>{
-        if ((adjMat[0][0]+adjMat[1][1]+adjMat[2][2]) % 3 == 0){
+        if ((adjMat[0][0]+adjMat[1][1]+adjMat[2][2]) % 3 == 0){ // X's are 1, O's are 2, a combination of three would get 
             return true;
         }
         else if ((adjMat[0][2] + adjMat[1][1] + adjMat[2][0])% 3 == 0){
@@ -133,11 +91,82 @@ const gameplay = (()=>{
         }
     }
 
+    const tie = (moves)=>{
+        if (moves.length ==  0){
+            return true
+        }
+        else{
+            return false;
+        }
+    }
+
+    const playATurn = (arr)=>{
+        let boxes = document.getElementsByClassName('tttBoxes');
+        let result = document.createElement('div');
+        result.style.cssText = 
+        `
+        color: white;
+        font-size: 25px;
+        margin-top: 2%;
+        text-align: center;
+        `
+        for (i = 0; i<box.length; i++){
+            boxes[i].addEventListener('click', (event)=>{
+                if (event.target.markedOrNot==false){
+                    event.target.style.color = 'white';
+                    event.target.innerHTML = moveStack[0];
+                    gameStackOperations.removeMove(moveStack);
+                    event.target.markedOrNot=true;
+                    if (moveStack[0] == 'O'){
+                        arr[Math.floor(parseInt(event.target.id)/3)][parseInt(event.target.id)%3] = 1;//1, if character on the board is X
+                    }
+                    else if (moveStack[0] == 'X'){
+                        arr[Math.floor(parseInt(event.target.id)/3)][parseInt(event.target.id)%3] = 2;//2, if character on the board is O
+                    }
+
+                    // Checking for win conditions as soon as a box is marked:-
+
+                    if (diagonalWin(adjacencyMatrix)){
+                        console.log('won');
+                        result.innerHTML = 'won';
+
+                        setTimeout(function(){
+                            window.location.reload();
+                        }, 5000);
+
+                    }
+                    
+                    else if (threeInARow(adjacencyMatrix, event)){
+                        console.log('won');
+                        setTimeout(function(){
+                            window.location.reload();
+                        }, 5000);
+                    }
+                    else if (threeInAColumn(adjacencyMatrix, event)){
+                        console.log('won');
+                        
+                        setTimeout(function(){
+                            window.location.reload();
+                        }, 5000);                
+                    }
+                    else if (tie(moveStack)){
+                        console.log('Tied');
+                        setTimeout(function(){
+                            window.location.reload();
+                        }, 5000); 
+                    }
+                }
+                else{
+                    return;
+                }
+            })
+        }
+    }
+
     return {playATurn};
 })()
 
 // Global code:-
-
 
 let moveStack = [];
 let adjacencyMatrix = [[], [], []];
@@ -148,12 +177,10 @@ let box = document.getElementsByClassName('tttBoxes');
 
 for (i = 0; i<box.length; i++){
     Object.defineProperty(box[i], 'markedOrNot', {
-        value: false,
+        value: false, // Boxes by default are unmarked, thus value is false on board initialisation; this helps avoid duplicate marks on double tapping marked boxes
         writable: true
-    })
+    });
 }
-
-
 gameplay.playATurn(adjacencyMatrix);
 
 /*let resetButton = document.getElementById('reset');
@@ -162,5 +189,3 @@ resetButton.addEventListener('click', ()=>{
         box[i].innerHTML = null;
     }
 }) [This bridge needs to be crossed later]*/ 
-
-// [DONE] Strategy for 3 in a row: match indices of 2d array and floor(id/3), id%3 of a grid unit 

@@ -23,7 +23,7 @@ multiplayerOption.addEventListener('mouseenter', ()=>{
         descriptionBox.innerHTML = '';
     })
     multiplayerOption.addEventListener('click', ()=>{
-        window.open('./ttt2v2/game2v2.html');
+        window.open('./ttt2v2/game1v1.html');
     })
 })
 
